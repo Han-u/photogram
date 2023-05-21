@@ -22,7 +22,8 @@ public class SecurityConfig {
                 .anyRequest().permitAll() // 그외 요청은 허용
                 .and()
                 .formLogin()// 접근 권한이 없을 때 로그인 창으로 애동
-                .loginPage("/auth/signin")
+                .loginPage("/auth/signin") // GET
+                .loginProcessingUrl("/auth/signin") // POST
                 .defaultSuccessUrl("/"); // 정상 로그인시 이동
         return http.build();
     }
