@@ -23,7 +23,7 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collector = new ArrayList<>();
-        collector.add((GrantedAuthority) () -> user.getRole());
+        collector.add(() -> user.getRole());
         return collector;
     }
 
@@ -56,4 +56,5 @@ public class PrincipalDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
