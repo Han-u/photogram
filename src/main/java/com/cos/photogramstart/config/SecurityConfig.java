@@ -18,7 +18,7 @@ public class SecurityConfig {
     SecurityFilterChain configure(HttpSecurity http) throws Exception{
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/", "/user/**", "/image/**", "/subscribe/**", "comment/**").authenticated() // 해당 주소로 들어가면 인증 필요
+                .antMatchers("/", "/user/**", "/image/**", "/subscribe/**", "/comment/**", "/api/**").authenticated() // 해당 주소로 들어가면 인증 필요
                 .anyRequest().permitAll() // 그외 요청은 허용
                 .and()
                 .formLogin()// 접근 권한이 없을 때 로그인 창으로 애동
