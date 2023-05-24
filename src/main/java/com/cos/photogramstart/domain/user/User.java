@@ -1,5 +1,7 @@
 package com.cos.photogramstart.domain.user;
 
+import com.cos.photogramstart.domain.image.Image;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +36,11 @@ public class User {
 
     private String profileImageUrl;
     private String role; // 권한
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"user"})
+    private List<Image> images;
+
     private LocalDateTime createDate;
 
     @PrePersist //DB 에 Insert 되기 직전에 실행
