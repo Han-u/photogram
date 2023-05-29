@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -30,6 +31,9 @@ public class ImageService {
         Page<Image> images = imageRepository.mStory(principalId, pageable);
 
         images.forEach((image) -> {
+
+            image.setLikeCount(image.getLikes().size());
+
             image.getLikes().forEach((like) -> {
                 if(like.getUser().getId() == principalId){
                     image.setLikeState(true);
@@ -55,6 +59,12 @@ public class ImageService {
 
         Image image = imageUploadDto.toEntity(imageFileName, principalDetails.getUser());
         imageRepository.save(image);
+
+    }
+
+    @Transactional(readOnly = true)
+    public List<Image> popular() {
+        return imageRepository.mPopular();
 
     }
 }

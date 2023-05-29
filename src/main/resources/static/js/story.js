@@ -54,15 +54,15 @@ function getStoryItem(image) {
 				</button>
 			</div>
 
-			<span class="like"><b id="storyLikeCount-1">3 </b>likes</span>
+			<span class="like"><b id="storyLikeCount-${image.id}">${image.likeCount} </b>likes</span>
 
 			<div class="sl__item__contents__content">
 				<p>${image.caption}</p>
 			</div>
 
-			<div id="storyCommentList-1">
+			<div id="storyCommentList-${image.id}">
 
-				<div class="sl__item__contents__comment" id="storyCommentItem-1"">
+				<div class="sl__item__contents__comment" id="storyCommentItem-1">
 							<p>
 								<b>Lovely :</b> 부럽습니다.
 							</p>
@@ -76,8 +76,8 @@ function getStoryItem(image) {
 					</div>
 
 					<div class="sl__item__input">
-						<input type="text" placeholder="댓글 달기..." id="storyCommentInput-1" />
-						<button type="button" onClick="addComment()">게시</button>
+						<input type="text" placeholder="댓글 달기..." id="storyCommentInput-${image.id}" />
+						<button type="button" onClick="addComment(${image.id})">게시</button>
 		</div>
 
 	</div>
@@ -100,24 +100,56 @@ $(window).scroll(() => {
 // (3) 좋아요, 안좋아요
 function toggleLike(imageId) {
     let likeIcon = $(`#storyLikeIcon-${imageId}`);
-    if (likeIcon.hasClass("far")) {
-        likeIcon.addClass("fas");
-        likeIcon.addClass("active");
-        likeIcon.removeClass("far");
-    } else {
-        likeIcon.removeClass("fas");
-        likeIcon.removeClass("active");
-        likeIcon.addClass("far");
+    if (likeIcon.hasClass("far")) { // 좋아요
+
+        $.ajax({
+            type: "post",
+            url: `/api/image/${imageId}/likes`,
+            dataType: "json"
+        }).done(res=>{
+
+            let likeCountStr = $(`#storyLikeCount-${imageId}`).text();
+            let likeCount = Number(likeCountStr) + 1;
+
+            $(`#storyLikeCount-${imageId}`).text(likeCount);
+
+            likeIcon.addClass("fas");
+            likeIcon.addClass("active");
+            likeIcon.removeClass("far");
+        }).fail(error=>{
+            console.log(error);
+        });
+
+    } else { // 취소
+
+        $.ajax({
+            type: "delete",
+            url: `/api/image/${imageId}/likes`,
+            dataType: "json"
+        }).done(res=>{
+            let likeCountStr = $(`#storyLikeCount-${imageId}`).text();
+            let likeCount = Number(likeCountStr) - 1;
+
+            $(`#storyLikeCount-${imageId}`).text(likeCount);
+
+            likeIcon.removeClass("fas");
+            likeIcon.removeClass("active");
+            likeIcon.addClass("far");
+        }).fail(error=>{
+            console.log(error);
+        });
+
     }
 }
 
 // (4) 댓글쓰기
-function addComment() {
+function addComment(imageId) {
 
-    let commentInput = $("#storyCommentInput-1");
-    let commentList = $("#storyCommentList-1");
+    let commentInput = $(`#storyCommentInput-${imageId}`);
+    let commentList = $(`#storyCommentList-${imageId}`);
 
     let data = {
+        imageId: imageId,
         content: commentInput.val()
     }
 
@@ -125,6 +157,18 @@ function addComment() {
         alert("댓글을 작성해주세요!");
         return;
     }
+
+    $.ajax({
+        type: "post",
+        url: "/api/comment",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json"
+    }).done(res=>{
+
+    }).fail(error=>{
+        console.log(error);
+    })
 
     let content = `
 			  <div class="sl__item__contents__comment" id="storyCommentItem-2""> 

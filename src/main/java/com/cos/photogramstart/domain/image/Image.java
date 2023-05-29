@@ -37,13 +37,17 @@ public class Image {
     @OneToMany(mappedBy = "image")
     private List<Likes> likes;
 
+    @Transient
+    private boolean likeState;
+
+    @Transient
+    private int likeCount;
+
     // 댓글
 
     @CreatedDate
     private LocalDateTime createDate;
 
-    @Transient
-    private boolean likeState;
 
 
 
