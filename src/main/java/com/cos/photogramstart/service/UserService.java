@@ -60,7 +60,7 @@ public class UserService {
         User userEntity = userRepository.findById(id).orElseThrow(() -> new CustomValidationApiException("찾을 수 없는 ID입니다."));
         userEntity.setName(user.getName());
 
-        String rawPassword = userEntity.getPassword();
+        String rawPassword = user.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 
         userEntity.setPassword(encPassword);
